@@ -1,0 +1,7 @@
+/node_modules/
+/bower_components/
+/logs/
+/dist/
+/build/
+dist.zip
+.DS_Store
