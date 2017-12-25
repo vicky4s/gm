@@ -165,8 +165,8 @@ export default class Chain {
     this.TAIL = -1;
     this.FREE = 0;
   }
-  at(index) {
-    if (index < 0 || index > this.length) return;
+  at(index = 0) {
+    if (index < 0 || index >= this.length) return;
     let cur;
     if (index < this.length / 2) {
       cur = this.chain[this.HEAD];
@@ -176,9 +176,8 @@ export default class Chain {
       }
     } else {
       cur = this.chain[this.TAIL];
-      for (let j = this.length; j !== index; --j) {
+      for (let i = this.length - 1; i !== index; --i) {
         cur = this.chain[cur.prev];
-        this.POINTER = cur.index;
       }
     }
     return cur;
