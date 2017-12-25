@@ -20,6 +20,7 @@
     "gulp-stylus": "^2.6.0",
     "gulp-uglify": "^3.0.0",
     "pump": "^2.0.0",
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.7"
   }
 }

@@ -35,7 +35,7 @@ export default class Chain {
       this.HEAD !== -1 && (this.chain[this.HEAD].prev = -1);
       --this.length === 0 && (this.TAIL = -1);
       this.collection();
-      return thia.chain[this.HEAD];
+      return this.chain[this.HEAD];
     }
     //头部增加一个节点
   unshift(item) {
@@ -45,7 +45,7 @@ export default class Chain {
       let first = this.chain[this.HEAD] = {
         prev: -1,
         index: this.HEAD,
-        next: second.index,
+        next: second,
         data: item
       };
       if (second !== -1) {
@@ -58,7 +58,7 @@ export default class Chain {
     //删除最后一个节点
   pop() {
       this.FREE = this.TAIL;
-      this.TAIL = this.chain[this.FREE].prev();
+      this.TAIL = this.chain[this.FREE].prev;
       this.TAIL !== -1 && (this.chain[this.TAIL].next = -1);
       this.collection();
       --this.length === 0 && (this.HEAD = -1);
