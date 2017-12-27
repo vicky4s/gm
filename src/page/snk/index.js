@@ -6,21 +6,29 @@ const row = per_count,
 const w = window.innerWidth,
   h = w,
   square_w = w / per_count;
+const sceonds = 300;
 
 const boxMap = new Map();
+const snakeNodeMap = new Map();
 const mainCon = document.getElementById('mainCon');
 const directionAry = ['left', 'up', 'right', 'down']; //37,38,39,40
 const App = {
   init() {
     this.initMap();
     this.initGround();
-    this.snake = this.initSnk();、、
-    //this.food = this.initFood();
+    this.snake = this.initSnk();
+    this.fId = 0;
+    this.gameover = false;
+    this.feed();
     var me = this;
     me.direction = 'left';
     me.interval = setInterval(function() {
-      me.handleMove();
-    }, 200);
+      if (!me.gameover) {
+        me.handleMove();
+      } else {
+        me.interval && clearInterval(me.interval);
+      }
+    }, sceonds);
     document.onkeydown = function(e) {
       var keyCode = e.keyCode;
       if (keyCode >= 37 && keyCode <= 40) {
@@ -32,6 +40,12 @@ const App = {
           me.direction = directionAry[e.keyCode - 37];
         }
       }
+    };
+    var btns = document.getElementsByClassName('J_directionBtn');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].onclick = function() {
+        me.direction = this.title;
+      };
     }
   },
   handleMove() {
@@ -41,8 +55,8 @@ const App = {
     switch (me.direction) {
       case 'up': //上
         if (fdt < per_count) {
-          alert('撞墙啦~');
-          me.interval && clearInterval(me.interval);
+          me.gameover = true;
+          alert('Ouch~撞墙啦T_T');
           break;
         }
         var hd = fdt - per_count;
@@ -50,8 +64,8 @@ const App = {
         break;
       case 'right': //右
         if (remain === 0) {
-          alert('撞墙啦~');
-          me.interval && clearInterval(me.interval);
+          me.gameover = true;
+          alert('Ouch~撞墙啦T_T');
           break;
         }
         var hd = fdt + 1;
@@ -59,8 +73,8 @@ const App = {
         break;
       case 'down': //下
         if (fdt > per_count * (per_count - 1)) {
-          alert('撞墙啦~');
-          me.interval && clearInterval(me.interval);
+          me.gameover = true;
+          alert('Ouch~撞墙啦T_T');
           break;
         }
         var hd = fdt + per_count;
@@ -68,8 +82,8 @@ const App = {
         break;
       case 'left': //左
         if (remain === 1) {
-          alert('撞墙啦~');
-          me.interval && clearInterval(me.interval);
+          me.gameover = true;
+          alert('Ouch~撞墙啦T_T');
           break;
         }
         var hd = fdt - 1;
@@ -81,24 +95,37 @@ const App = {
   },
   updateBody(hd) {
     var me = this;
+    if (snakeNodeMap.has(hd)) {
+      alert('Ouch~咬到自己啦T_T');
+      me.gameover = true;
+      return;
+    }
     me.snake.unshift(hd);
-    boxMap.get(hd).style.background = '#FF0000';
-    boxMap.get(me.snake.last().data).style.background = 'none';
-    me.snake.pop();
-  },
-  feed() {
+    let curtHead = boxMap.get(hd);
+    curtHead.style.background = '#FF0000';
+    if (me.fId !== hd) {
+      let curtLast = me.snake.last().data;
+      boxMap.get(curtLast).style.background = 'none';
+      snakeNodeMap.set(hd, curtHead);
+      snakeNodeMap.delete(curtLast);
+      me.snake.pop();
+    } else {
+      setTimeout(function() {
+        me.feed();
+      }, sceonds);
+    }
 
   },
-  initFood() {
-    // let food = document.createElement('div');
-    // food.style.width = square_w + 'px';
-    // food.style.height = square_w + 'px';
-    // food.style.position = 'absolute';
-    // food.style.top = (Math.random() * per_count >> 0) * square_w + 'px';
-    // food.style.left = (Math.random() * per_count >> 0) * square_w + 'px';
-    // food.style.background = '#FFED5F';
-    // mainCon.appendChild(food);
-    // return food;
+  feed() {
+    var me = this;
+    let fId = Math.random() * total >> 0;
+    if (snakeNodeMap.has(fId)) {
+      me.feed();
+    } else {
+      this.fId = fId;
+      let fd = boxMap.get(fId);
+      fd.style.background = '#FFED5F';
+    }
   },
   initMap() {
     for (let k = 0; k < total; k++) {
@@ -139,12 +166,21 @@ const App = {
   },
   initSnk() {
     let snake = new Chain([]);
+
     snake.push(190);
-    boxMap.get(190).style.background = '#FF0000';
+    let node1 = boxMap.get(190);
+    node1.style.background = '#FF0000';
+    snakeNodeMap.set(190, node1);
+
     snake.push(191);
-    boxMap.get(191).style.background = '#FF0000';
+    let node2 = boxMap.get(191);
+    node2.style.background = '#FF0000';
+    snakeNodeMap.set(191, node2);
+
     snake.push(192);
-    boxMap.get(192).style.background = '#FF0000';
+    let node3 = boxMap.get(192);
+    node3.style.background = '#FF0000';
+    snakeNodeMap.set(192, node3);
     return snake;
   }
 }
