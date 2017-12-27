@@ -11,7 +11,11 @@ const sceonds = 300;
 const boxMap = new Map();
 const snakeNodeMap = new Map();
 const mainCon = document.getElementById('mainCon');
+const scoreText = document.getElementById('J_score');
+const timeText = document.getElementById('J_time');
+
 const directionAry = ['left', 'up', 'right', 'down']; //37,38,39,40
+
 const App = {
   init() {
     this.initMap();
@@ -19,6 +23,8 @@ const App = {
     this.snake = this.initSnk();
     this.fId = 0;
     this.gameover = false;
+    this.score = 0;
+    this.palytime = 0;
     this.feed();
     var me = this;
     me.direction = 'left';
@@ -29,6 +35,17 @@ const App = {
         me.interval && clearInterval(me.interval);
       }
     }, sceonds);
+
+    me.timeCount = setInterval(function() {
+      if (!me.gameover) {
+        me.palytime++;
+        timeText.innerHTML = me.formatDuring(me.palytime);
+      } else {
+        me.timeCount && clearInterval(me.timeCount);
+      }
+    }, 1000);
+
+
     document.onkeydown = function(e) {
       var keyCode = e.keyCode;
       if (keyCode >= 37 && keyCode <= 40) {
@@ -110,11 +127,12 @@ const App = {
       snakeNodeMap.delete(curtLast);
       me.snake.pop();
     } else {
+      me.score++;
+      scoreText.innerHTML = me.score;
       setTimeout(function() {
         me.feed();
       }, sceonds);
     }
-
   },
   feed() {
     var me = this;
@@ -182,6 +200,15 @@ const App = {
     node3.style.background = '#FF0000';
     snakeNodeMap.set(192, node3);
     return snake;
+  },
+  formatDuring(mss) {
+    let hours = parseInt((mss % (60 * 60 * 24)) / (60 * 60));
+    let minutes = parseInt((mss % (60 * 60)) / 60);
+    let seconds = mss % 60;
+    return this.single2Double(hours) + ":" + this.single2Double(minutes) + ":" + this.single2Double(seconds);
+  },
+  single2Double(d) {
+    return d < 10 ? ('0' + d) : d;
   }
-}
+};
 App.init();
