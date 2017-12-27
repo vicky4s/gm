@@ -1,4 +1,5 @@
 import Chain from "./chain.js";
+//import map from "./map.js";
 const per_count = 20;
 const row = per_count,
   col = per_count,
@@ -44,25 +45,28 @@ const App = {
         me.timeCount && clearInterval(me.timeCount);
       }
     }, 1000);
-
-
     document.onkeydown = function(e) {
       var keyCode = e.keyCode;
-      if (keyCode >= 37 && keyCode <= 40) {
-        if ((keyCode == 37 || keyCode == 39) && (me.direction == 'left' || me.direction == 'right')) {
-          return;
-        } else if ((keyCode == 38 || keyCode == 40) && (me.direction == 'up' || me.direction == 'down')) {
-          return;
-        } else {
-          me.direction = directionAry[e.keyCode - 37];
-        }
-      }
+      me.handleDirection(keyCode);
     };
     var btns = document.getElementsByClassName('J_directionBtn');
     for (var i = 0; i < btns.length; i++) {
       btns[i].onclick = function() {
-        me.direction = this.title;
+        var keyCode = parseInt(this.title);
+        me.handleDirection(keyCode);
       };
+    }
+  },
+  handleDirection(keyCode) {
+    var me = this;
+    if (keyCode >= 37 && keyCode <= 40) {
+      if ((keyCode == 37 || keyCode == 39) && (me.direction == 'left' || me.direction == 'right')) {
+        return;
+      } else if ((keyCode == 38 || keyCode == 40) && (me.direction == 'up' || me.direction == 'down')) {
+        return;
+      } else {
+        me.direction = directionAry[keyCode - 37];
+      }
     }
   },
   handleMove() {
