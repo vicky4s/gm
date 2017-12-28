@@ -17,8 +17,9 @@ const timeText = document.getElementById('J_time');
 
 const directionAry = ['left', 'up', 'right', 'down']; //37,38,39,40
 
-const App = {
+const Control = {
   init() {
+    this.boxKeys = new Array();
     this.initMap();
     this.initGround();
     this.snake = this.initSnk();
@@ -124,10 +125,10 @@ const App = {
     me.snake.unshift(hd);
     let curtHead = boxMap.get(hd);
     curtHead.style.background = '#FF0000';
+    snakeNodeMap.set(hd, curtHead);
     if (me.fId !== hd) {
       let curtLast = me.snake.last().data;
       boxMap.get(curtLast).style.background = 'none';
-      snakeNodeMap.set(hd, curtHead);
       snakeNodeMap.delete(curtLast);
       me.snake.pop();
     } else {
@@ -139,17 +140,15 @@ const App = {
     }
   },
   feed() {
-    var me = this;
-    let fId = Math.random() * total >> 0;
-    if (snakeNodeMap.has(fId)) {
-      me.feed();
-    } else {
-      this.fId = fId;
-      let fd = boxMap.get(fId);
-      fd.style.background = '#FFED5F';
-    }
+    var me = this,
+      snakeKeys = [...snakeNodeMap.keys()],
+      foodsAry = me.boxKeys.filter(x => !snakeKeys.includes(x));
+    let fId = Math.random() * foodsAry.length >> 0;
+    me.fId = foodsAry[fId];
+    boxMap.get(me.fId).style.background = '#FFED5F';
   },
   initMap() {
+    var me = this;
     for (let k = 0; k < total; k++) {
       let box = document.createElement('div');
       box.style.width = square_w + 'px';
@@ -158,21 +157,26 @@ const App = {
       box.style.top = (k / per_count >> 0) * square_w + 'px';
       box.style.left = (k % per_count) * square_w + 'px';
       mainCon.appendChild(box);
-      boxMap.set(k + 1, box);
+      let key = k + 1;
+      boxMap.set(key, box);
+      me.boxKeys.push(key);
     }
   },
   initGround() {
+    let pixel = 4;
     let canvas = document.getElementById('ground');
-    canvas.width = w;
-    canvas.height = h;
+    canvas.width = w * pixel;
+    canvas.height = h * pixel;
     canvas.style.background = '#8BC34A';
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
     let ctx = canvas.getContext('2d');
     for (let i = 1; i < row; i++) {
       ctx.beginPath();
       ctx.lineWidth = "1";
       ctx.strokeStyle = "#38521987";
-      ctx.moveTo(i * square_w, 0);
-      ctx.lineTo(i * square_w, w);
+      ctx.moveTo(i * square_w * pixel, 0);
+      ctx.lineTo(i * square_w * pixel, w * pixel);
       ctx.closePath();
       ctx.stroke();
     }
@@ -180,29 +184,31 @@ const App = {
       ctx.beginPath();
       ctx.lineWidth = "1";
       ctx.strokeStyle = "#38521987";
-      ctx.moveTo(0, j * square_w);
-      ctx.lineTo(w, j * square_w);
+      ctx.moveTo(0, j * square_w * pixel);
+      ctx.lineTo(w * pixel, j * square_w * pixel);
       ctx.closePath();
       ctx.stroke();
     }
   },
   initSnk() {
     let snake = new Chain([]);
-
-    snake.push(190);
-    let node1 = boxMap.get(190);
+    var n1 = (per_count / 2 >> 0) * (per_count - 1),
+      n2 = n1 + 1,
+      n3 = n1 + 2;
+    snake.push(n1);
+    let node1 = boxMap.get(n1);
     node1.style.background = '#FF0000';
-    snakeNodeMap.set(190, node1);
+    snakeNodeMap.set(n1, node1);
 
-    snake.push(191);
-    let node2 = boxMap.get(191);
+    snake.push(n2);
+    let node2 = boxMap.get(n2);
     node2.style.background = '#FF0000';
-    snakeNodeMap.set(191, node2);
+    snakeNodeMap.set(n2, node2);
 
-    snake.push(192);
-    let node3 = boxMap.get(192);
+    snake.push(n3);
+    let node3 = boxMap.get(n3);
     node3.style.background = '#FF0000';
-    snakeNodeMap.set(192, node3);
+    snakeNodeMap.set(n3, node3);
     return snake;
   },
   formatDuring(mss) {
@@ -215,4 +221,4 @@ const App = {
     return d < 10 ? ('0' + d) : d;
   }
 };
-App.init();
+Control.init();
