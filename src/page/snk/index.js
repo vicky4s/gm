@@ -14,7 +14,6 @@ const snakeNodeMap = new Map();
 const mainCon = document.getElementById('mainCon');
 const scoreText = document.getElementById('J_score');
 const timeText = document.getElementById('J_time');
-
 const directionAry = ['left', 'up', 'right', 'down']; //37,38,39,40
 
 const Control = {
@@ -79,37 +78,37 @@ const Control = {
         if (fdt < per_count) {
           me.gameover = true;
           alert('Ouch~撞墙啦T_T');
-          break;
+        } else {
+          var hd = fdt - per_count;
+          me.updateBody(hd);
         }
-        var hd = fdt - per_count;
-        me.updateBody(hd);
         break;
       case 'right': //右
         if (remain === 0) {
           me.gameover = true;
           alert('Ouch~撞墙啦T_T');
-          break;
+        } else {
+          var hd = fdt + 1;
+          me.updateBody(hd);
         }
-        var hd = fdt + 1;
-        me.updateBody(hd);
         break;
       case 'down': //下
         if (fdt > per_count * (per_count - 1)) {
           me.gameover = true;
           alert('Ouch~撞墙啦T_T');
-          break;
+        } else {
+          var hd = fdt + per_count;
+          me.updateBody(hd);
         }
-        var hd = fdt + per_count;
-        me.updateBody(hd);
         break;
       case 'left': //左
         if (remain === 1) {
           me.gameover = true;
           alert('Ouch~撞墙啦T_T');
-          break;
+        } else {
+          var hd = fdt - 1;
+          me.updateBody(hd);
         }
-        var hd = fdt - 1;
-        me.updateBody(hd);
         break;
       default:
         break;
@@ -122,10 +121,6 @@ const Control = {
       me.gameover = true;
       return;
     }
-    me.snake.unshift(hd);
-    let curtHead = boxMap.get(hd);
-    curtHead.style.background = '#FF0000';
-    snakeNodeMap.set(hd, curtHead);
     if (me.fId !== hd) {
       let curtLast = me.snake.last().data;
       boxMap.get(curtLast).style.background = 'none';
@@ -138,6 +133,10 @@ const Control = {
         me.feed();
       }, sceonds);
     }
+    me.snake.unshift(hd);
+    let curtHead = boxMap.get(hd);
+    curtHead.style.background = '#FF0000';
+    snakeNodeMap.set(hd, curtHead);
   },
   feed() {
     var me = this,

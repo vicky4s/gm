@@ -53,7 +53,7 @@ export default class Chain {
       } else {
         this.HEAD = this.TAIL = -1;
       }
-      this.length--;
+      this.length++;
     }
     //删除最后一个节点
   pop() {
